@@ -7,29 +7,7 @@
       i18n:domain="collective.cover">
 <body>
 
-<metal:js fill-slot="javascript_head_slot">
-  <script type="text/javascript"
-          tal:define="navroot context/@@plone_portal_state/navigation_root_url"
-          tal:attributes="src string:${navroot}/++resource++collective.cover/layout_edit.js">
-  </script>
-  <script type="text/javascript"
-          tal:define="navroot context/@@plone_portal_state/navigation_root_url"
-          tal:attributes="src string:${navroot}/++resource++collective.cover/layout_base.js">
-  </script>
-  <script type="text/javascript"
-          tal:define="navroot context/@@plone_portal_state/navigation_root_url"
-          tal:attributes="src string:${navroot}/++resource++collective.cover/jss.min.js">
-  </script>
 
-  <script type="text/javascript">
-    jQuery(document).ready(function() {
-      if (typeof(plone) !== 'undefined') {
-        jQuery(window).unload(plone.UnlockHandler.execute);
-      }
-    });
-  </script>
-
-</metal:js>
 
 <metal:styles fill-slot="style_slot">
   <link rel="stylesheet" type="text/css" media="screen" href=""
@@ -80,6 +58,30 @@
       <a id="btn-save" class="btn btn-success saved"><span i18n:translate="">Saved</span></a>
     </div>
   </tal:block>
+  
+  <metal:js>
+  <script type="text/javascript"
+          tal:define="navroot context/@@plone_portal_state/navigation_root_url"
+          tal:attributes="src string:${navroot}/++resource++collective.cover/layout_edit.js">
+  </script>
+  <script type="text/javascript"
+          tal:define="navroot context/@@plone_portal_state/navigation_root_url"
+          tal:attributes="src string:${navroot}/++resource++collective.cover/layout_base.js">
+  </script>
+  <script type="text/javascript"
+          tal:define="navroot context/@@plone_portal_state/navigation_root_url"
+          tal:attributes="src string:${navroot}/++resource++collective.cover/jss.min.js">
+  </script>
+
+  <script type="text/javascript">
+    jQuery(document).ready(function() {
+      if (typeof(plone) !== 'undefined') {
+        jQuery(window).unload(plone.UnlockHandler.execute);
+      }
+    });
+  </script>
+
+</metal:js>
 </metal:main>
 
 </body>

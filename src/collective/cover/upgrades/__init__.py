@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
-
 from collective.cover.config import PROJECTNAME
 from collective.cover.controlpanel import ICoverSettings
+from persistent.mapping import PersistentMapping
 from plone import api
 from plone.registry.interfaces import IRegistry
+from plone.tiles.interfaces import ITileDataManager
 from zope.component import getUtility
 
 import logging
@@ -25,8 +26,6 @@ def issue_201(context):
         logger.info('"{0}"" resource was removed'.format(old_id))
         css_tool.cookResources()
         logger.info('CSS resources were cooked')
-    else:
-        logger.debug('"{0}" resource not found in portal_css'.format(old_id))
 
     # now we mess with the JS registry
     js_tool = api.portal.get_tool('portal_javascripts')
@@ -42,8 +41,6 @@ def issue_201(context):
 
         js_tool.cookResources()
         logger.info('JS resources were cooked')
-    else:
-        logger.debug('"{0}" resource not found in portal_javascripts'.format(old_id))
 
 
 def issue_303(context):
@@ -117,3 +114,50 @@ def change_configlet_permissions(context):
     configlet = cptool.getActionObject('Products/cover')
     configlet.permissions = ('collective.cover: Setup',)
     logger.info('configlet permissions updated')
+
+
+def upgrade_carousel_tiles_custom_url(context):
+    # Get covers
+    covers = context.portal_catalog(portal_type='collective.cover.content')
+    logger.info('About to update %s covers' % len(covers))
+    for cover in covers:
+        obj = cover.getObject()
+        tile_ids = obj.list_tiles(types=[
+            u'collective.cover.carousel',
+            u'collective.cover.list'
+        ])
+        for tile_id in tile_ids:
+            tile = obj.get_tile(tile_id)
+            old_data = ITileDataManager(tile).get()
+            uuids = old_data['uuids']
+            if isinstance(uuids, PersistentMapping):
+                # This tile is fixed, carry on
+                logger.info(
+                    'Tile %s at %s was already updated' %
+                    (tile_id, cover.getPath())
+                )
+                continue
+            if not uuids:
+                # This tile did not have data, so ignore
+                logger.info(
+                    'Tile %s at %s did not have any data' %
+                    (tile_id, cover.getPath())
+                )
+                continue
+
+            new_data = PersistentMapping()
+            order = 0
+            for uuid in uuids:
+                if uuid not in new_data.keys():
+                    entry = PersistentMapping()
+                    entry[u'order'] = unicode(order)
+                    new_data[uuid] = entry
+                    order += 1
+
+            old_data['uuids'] = new_data
+            ITileDataManager(tile).set(old_data)
+
+            logger.info(
+                'Tile %s at %s updated' % (tile_id, cover.getPath())
+            )
+    logger.info('Done')

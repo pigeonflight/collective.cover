@@ -3,10 +3,51 @@ Changelog
 
 There's a frood who really knows where his towel is.
 
-1.0a10 (unreleased)
+1.0a11 (unreleased)
 ^^^^^^^^^^^^^^^^^^^
 
 - Nothing changed yet.
+
+
+1.0a10 (2014-10-31)
+^^^^^^^^^^^^^^^^^^^
+
+- Allow to set a custom URL on elements for a Carousel (solves `#377`_).
+  [frapell]
+
+- If an Image content is included, redirect to view and not the image itself
+  [frapell]
+
+- Modifying annotations, while iterating through them, caused their size to be reduced and the loop to end early, leaving annotations in the object.
+  [cguardia]
+
+- Add an option to extend JS configuration to reload tile in custom tiles (outside of collective.cover).
+  [rodfersou]
+
+- Include a behavior to add a couple of fields that enable reloading the current page after a certain amount of time.
+  Typical use case is a news portal that wants to keep the front page updated and increase the number of page views.
+  [hvelarde]
+
+- Fix modification time disappearing from context data and handling missing value (fixes `#449`_).
+  [mhora]
+
+- Show event's start date (instead of publication date) for Event-like objects in Basic, Collection and List tiles.
+  [hvelarde]
+
+- Remove PloneFormGen's 'Form Folder' from default searchable types (fixes `#438`_).
+  [djowett]
+
+- Fix AttributeError caused by editing a basic tile and not populating the
+  image field.
+  [enfold-josh]
+
+- Fix ``RemoveItemFromListTile`` helper browser view to avoid failure to
+  remove an object when the tile is not a List Tile but a subclass of it.
+  [hvelarde]
+
+- Fix ``UpdateTileContent`` helper browser view to avoid returning the
+  rendering of previous object in tile on AJAX calls.
+  [hvelarde]
 
 
 1.0a9 (2014-06-27)
@@ -71,7 +112,7 @@ There's a frood who really knows where his towel is.
 
 - Add RichText tiles to the SearchableText index of the cover.
   [thepjot]
-  
+
 - Re-enable item sorting on the carousel tile edit form. It was by accident
   disabled by removing the field on the list tile schema from which the
   carousel tile inherits.
@@ -525,6 +566,7 @@ There's a frood who really knows where his towel is.
 .. _`#351`: https://github.com/collective/collective.cover/issues/351
 .. _`#371`: https://github.com/collective/collective.cover/issues/371
 .. _`#374`: https://github.com/collective/collective.cover/issues/374
+.. _`#377`: https://github.com/collective/collective.cover/issues/377
 .. _`#381`: https://github.com/collective/collective.cover/issues/381
 .. _`#383`: https://github.com/collective/collective.cover/issues/383
 .. _`#393`: https://github.com/collective/collective.cover/issues/393
@@ -537,4 +579,6 @@ There's a frood who really knows where his towel is.
 .. _`#421`: https://github.com/collective/collective.cover/issues/421
 .. _`#423`: https://github.com/collective/collective.cover/issues/423
 .. _`#426`: https://github.com/collective/collective.cover/issues/426
+.. _`#438`: https://github.com/collective/collective.cover/issues/438
+.. _`#449`: https://github.com/collective/collective.cover/issues/449
 .. _`PloneFormGen`: https://pypi.python.org/pypi/Products.PloneFormGen

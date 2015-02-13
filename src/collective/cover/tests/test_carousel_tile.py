@@ -5,7 +5,6 @@ from collective.cover.tiles.carousel import CarouselTile
 from collective.cover.tiles.carousel import ICarouselTile
 from collective.cover.tiles.carousel import UUIDSFieldDataConverter
 from collective.cover.widgets.textlinessortable import TextLinesSortableWidget
-from persistent.mapping import PersistentMapping
 from plone.tiles.interfaces import ITileDataManager
 from plone.uuid.interfaces import IUUID
 
@@ -88,7 +87,7 @@ class CarouselTileTestCase(TestTileMixin, unittest.TestCase):
 
         uuids = ITileDataManager(self.tile).get().get('uuids', None)
 
-        self.assertTrue(isinstance(uuids, PersistentMapping))
+        self.assertTrue(isinstance(uuids, dict))
         self.assertTrue(len(uuids) == 1)
         self.assertTrue(uuids[obj1.UID()]['order'] == u'0')
 
@@ -99,10 +98,66 @@ class CarouselTileTestCase(TestTileMixin, unittest.TestCase):
 
         uuids = ITileDataManager(self.tile).get().get('uuids', None)
 
-        self.assertTrue(isinstance(uuids, PersistentMapping))
+        self.assertTrue(isinstance(uuids, dict))
         self.assertTrue(len(uuids) == 2)
         self.assertTrue(uuids[obj1.UID()]['order'] == u'0')
         self.assertTrue(uuids[obj2.UID()]['order'] == u'1')
+
+    def test_custom_title(self):
+        # we start with an empty tile
+        self.assertTrue(self.tile.is_empty())
+        uuids = ITileDataManager(self.tile).get().get('uuids', None)
+
+        self.assertIsNone(uuids)
+
+        # now we 2 elements
+        obj1 = self.portal['my-document']
+        obj2 = self.portal['my-image']
+
+        self.tile.populate_with_uids([
+            obj1.UID(), obj2.UID()
+        ])
+
+        # For obj2 we will assign a custom_title
+
+        uuids = ITileDataManager(self.tile).get().get('uuids', None)
+        uuids[obj2.UID()]['custom_title'] = u'New Title'
+
+        title1 = self.tile.get_title(obj1)
+        title2 = self.tile.get_title(obj2)
+
+        # Document object should be the same as Title
+        self.assertEqual(title1, obj1.Title())
+        # First image should return the custom Title
+        self.assertEqual(title2, u'New Title')
+
+    def test_custom_description(self):
+        # we start with an empty tile
+        self.assertTrue(self.tile.is_empty())
+        uuids = ITileDataManager(self.tile).get().get('uuids', None)
+
+        self.assertIsNone(uuids)
+
+        # now we 2 elements
+        obj1 = self.portal['my-document']
+        obj2 = self.portal['my-image']
+
+        self.tile.populate_with_uids([
+            obj1.UID(), obj2.UID()
+        ])
+
+        # For obj2 we will assign a custom_description
+
+        uuids = ITileDataManager(self.tile).get().get('uuids', None)
+        uuids[obj2.UID()]['custom_description'] = u'New Description'
+
+        description1 = self.tile.get_description(obj1)
+        description2 = self.tile.get_description(obj2)
+
+        # Document object should be the same as Description
+        self.assertEqual(description1, obj1.Description())
+        # First image should return the custom URL
+        self.assertEqual(description2, u'New Description')
 
     def test_custom_url(self):
         # we start with an empty tile
